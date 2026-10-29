@@ -50,6 +50,8 @@ fun MinimalModePreferences(
     val prefs2 = preferenceManager2()
     val resources = LocalContext.current.resources
     val allowedApps = prefs2.minimalModeApps.getAdapter().state.value
+    // Lawndeck swaps the whole home screen too, so the two can't be on together.
+    val deckLayout = prefs2.deckLayout.getAdapter().state.value
 
     PreferenceLayout(
         label = stringResource(id = R.string.minimal_mode_label),
@@ -60,7 +62,10 @@ fun MinimalModePreferences(
             SwitchPreference(
                 adapter = prefs2.minimalModeEnabled.getAdapter(),
                 label = stringResource(id = R.string.minimal_mode_enable_label),
-                description = stringResource(id = R.string.minimal_mode_enable_description),
+                description = stringResource(
+                    id = if (deckLayout) R.string.minimal_mode_unavailable_with_deck else R.string.minimal_mode_enable_description,
+                ),
+                enabled = !deckLayout,
             )
             NavigationActionPreference(
                 label = stringResource(id = R.string.minimal_mode_allowed_apps_label),

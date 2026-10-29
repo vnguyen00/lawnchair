@@ -27,7 +27,8 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
 /**
- * App-wide Minimal Mode state, shared by the launcher, the app drawer and icons.
+ * App-wide Minimal Mode state, shared by the launcher, the app drawer and icons. Also switches
+ * the home screen to its Minimal Mode layout and back.
  */
 class MinimalModeManager private constructor(context: Context) {
 
@@ -35,6 +36,7 @@ class MinimalModeManager private constructor(context: Context) {
     private val scope = MainScope()
 
     val policy = MinimalModePolicy(context)
+    private val layoutSwitcher = MinimalModeLayoutSwitcher(context, policy)
 
     private val _changes = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
 
@@ -46,10 +48,13 @@ class MinimalModeManager private constructor(context: Context) {
         policy.isEnabled = prefs2.minimalModeEnabled.firstCached(prefs2)
         var allowedApps = prefs2.minimalModeApps.firstCached(prefs2)
         policy.setAllowedApps(allowedApps)
+        // Catches up if the app stopped before the home screen layout was switched.
+        layoutSwitcher.apply(policy.isEnabled)
 
         prefs2.minimalModeEnabled.get().onEach {
             if (it == policy.isEnabled) return@onEach
             policy.isEnabled = it
+            layoutSwitcher.apply(it)
             _changes.tryEmit(Unit)
         }.launchIn(scope)
         prefs2.minimalModeApps.get().onEach {

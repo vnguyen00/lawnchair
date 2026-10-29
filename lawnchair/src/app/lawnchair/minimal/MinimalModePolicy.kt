@@ -39,8 +39,10 @@ class MinimalModePolicy(private val context: Context) {
             dialerPackage = null
         }
 
+    /** Allowed apps as (package name, user) pairs. */
     @Volatile
-    private var allowedApps: Set<Pair<String, UserHandle>> = emptySet()
+    var allowedApps: Set<Pair<String, UserHandle>> = emptySet()
+        private set
 
     // Looked up lazily, since icons check it on every bind.
     @Volatile
@@ -62,10 +64,11 @@ class MinimalModePolicy(private val context: Context) {
 
     /** Whether [item] should be shown grayed out. */
     fun isBlocked(item: ItemInfo): Boolean {
-        if (!isEnabled) return false
         val packageName = item.targetPackage ?: return false
-        return !isAllowed(packageName, item.user ?: Process.myUserHandle())
+        return isBlocked(packageName, item.user ?: Process.myUserHandle())
     }
+
+    fun isBlocked(packageName: String, user: UserHandle): Boolean = isEnabled && !isAllowed(packageName, user)
 
     private fun isAllowed(packageName: String, user: UserHandle): Boolean = isAlwaysAllowed(packageName) || (packageName to user) in allowedApps
 

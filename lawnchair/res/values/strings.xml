@@ -916,7 +916,8 @@
     <string name="minimal_mode_label">Minimal Mode</string>
     <string name="minimal_mode_description">Only allow the apps you choose</string>
     <string name="minimal_mode_enable_label">Use Minimal Mode</string>
-    <string name="minimal_mode_enable_description">Apps that aren\'t allowed can\'t be opened from the launcher</string>
+    <string name="minimal_mode_enable_description">Switches to a home screen with only the apps you allow</string>
+    <string name="minimal_mode_unavailable_with_deck">Turn off the Lawndeck home layout to use Minimal Mode</string>
     <string name="minimal_mode_allowed_apps_label">Allowed apps</string>
     <string name="minimal_mode_allowed_apps_label_with_count">Allowed apps (%1$d)</string>
     <string name="minimal_mode_app_blocked">Blocked in Minimal Mode</string>

@@ -53,6 +53,8 @@ fun HomeLayoutSettings(
     val context = LocalContext.current
 
     val deskLayout = prefs2.deckLayout.getAdapter()
+    // Lawnchair: Minimal Mode has its own home screen layout, so Lawndeck can't switch meanwhile
+    val minimalModeEnabled = prefs2.minimalModeEnabled.getAdapter().state.value
     val addNewAppToHome = prefs.addIconToHome.getAdapter()
 
     val deckManager = remember { LawndeckManager(context) }
@@ -155,6 +157,7 @@ fun HomeLayoutSettings(
                 loading = isLoading,
             )
         },
+        enabled = !minimalModeEnabled && !isLoading,
         modifier = modifier,
     )
 }
