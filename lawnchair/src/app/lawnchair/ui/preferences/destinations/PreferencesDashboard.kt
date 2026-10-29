@@ -81,6 +81,7 @@ import app.lawnchair.ui.preferences.navigation.Folders
 import app.lawnchair.ui.preferences.navigation.General
 import app.lawnchair.ui.preferences.navigation.Gestures
 import app.lawnchair.ui.preferences.navigation.HomeScreen
+import app.lawnchair.ui.preferences.navigation.MinimalMode
 import app.lawnchair.ui.preferences.navigation.PreferenceRootRoute
 import app.lawnchair.ui.preferences.navigation.Quickstep
 import app.lawnchair.ui.preferences.navigation.Search
@@ -198,6 +199,14 @@ fun PreferencesDashboard(
                 iconResource = R.drawable.ic_gestures,
                 onNavigate = { onNavigate(Gestures) },
                 isSelected = currentRoute is Gestures,
+            )
+
+            PreferenceCategory(
+                label = stringResource(R.string.minimal_mode_label),
+                description = stringResource(R.string.minimal_mode_description),
+                iconResource = R.drawable.hourglass_24px,
+                onNavigate = { onNavigate(MinimalMode) },
+                isSelected = currentRoute is MinimalMode,
             )
 
             ExpandAndShrink(

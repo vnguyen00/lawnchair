@@ -337,6 +337,16 @@ class PreferenceManager2 @Inject constructor(
         defaultValue = setOf(),
     )
 
+    val minimalModeEnabled = preference(
+        key = booleanPreferencesKey(name = "minimal_mode_enabled"),
+        defaultValue = false,
+    )
+
+    val minimalModeApps = preference(
+        key = stringSetPreferencesKey(name = "minimal_mode_apps"),
+        defaultValue = setOf(),
+    )
+
     val roundedWidgets = preference(
         key = booleanPreferencesKey(name = "rounded_widgets"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_rounded_widgets),

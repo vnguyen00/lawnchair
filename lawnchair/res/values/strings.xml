@@ -911,6 +911,15 @@
     <!-- HiddenAppsPreferences -->
     <string name="hide_from_drawer">Hide from app drawer</string>
     <string name="hidden_apps_label_with_count">Hidden apps (%1$d)</string>
+
+    <!-- Minimal Mode -->
+    <string name="minimal_mode_label">Minimal Mode</string>
+    <string name="minimal_mode_description">Only allow the apps you choose</string>
+    <string name="minimal_mode_enable_label">Use Minimal Mode</string>
+    <string name="minimal_mode_enable_description">Apps that aren\'t allowed can\'t be opened from the launcher</string>
+    <string name="minimal_mode_allowed_apps_label">Allowed apps</string>
+    <string name="minimal_mode_allowed_apps_label_with_count">Allowed apps (%1$d)</string>
+    <string name="minimal_mode_app_blocked">Blocked in Minimal Mode</string>
     <plurals name="apps_count">
         <item quantity="one">%1$d app</item>
         <item quantity="other">%1$d apps</item>

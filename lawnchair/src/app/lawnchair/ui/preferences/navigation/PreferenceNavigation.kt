@@ -40,6 +40,8 @@ import app.lawnchair.ui.preferences.destinations.FontSelection
 import app.lawnchair.ui.preferences.destinations.GeneralPreferences
 import app.lawnchair.ui.preferences.destinations.GesturePreferences
 import app.lawnchair.ui.preferences.destinations.HiddenAppsPreferences
+import app.lawnchair.ui.preferences.destinations.MinimalModeAppsPreferences
+import app.lawnchair.ui.preferences.destinations.MinimalModePreferences
 import app.lawnchair.ui.preferences.destinations.HomeScreenGridPreferences
 import app.lawnchair.ui.preferences.destinations.HomeScreenPreferences
 import app.lawnchair.ui.preferences.destinations.IconPickerPreference
@@ -198,6 +200,13 @@ fun PreferenceNavigation(
             deepLinks = getDeepLink(Gestures),
         ) { GesturePreferences() }
         composable<GesturesPickApp> { PickAppForGesture() }
+
+        composable<MinimalMode>(
+            deepLinks = getDeepLink(MinimalMode),
+        ) { MinimalModePreferences() }
+        composable<MinimalModeApps>(
+            deepLinks = getDeepLink(MinimalModeApps),
+        ) { MinimalModeAppsPreferences() }
 
         composable<Quickstep>(
             deepLinks = getDeepLink(Quickstep),
