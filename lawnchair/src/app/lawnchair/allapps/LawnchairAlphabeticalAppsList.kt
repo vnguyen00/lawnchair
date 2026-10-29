@@ -9,6 +9,7 @@ import androidx.lifecycle.lifecycleScope
 import app.lawnchair.data.folder.FolderEntry
 import app.lawnchair.data.folder.model.FolderViewModel
 import app.lawnchair.launcher
+import app.lawnchair.minimal.MinimalModeManager
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.util.categorizeAppsWithSystemAndGoogle
@@ -41,6 +42,7 @@ class LawnchairAlphabeticalAppsList<T>(
     private var hiddenApps: Set<String> = setOf()
     private val prefs2 = PreferenceManager2.getInstance(context)
     private val prefs = PreferenceManager.getInstance(context)
+    private val minimalModePolicy = MinimalModeManager.getInstance(context).policy
 
     private val viewModel = FolderViewModel(
         (context as? ComponentActivity)?.application ?: context.launcher.application,
@@ -90,6 +92,13 @@ class LawnchairAlphabeticalAppsList<T>(
         val drawerListDefault = prefs.drawerList.get()
         filteredList.clear()
         var position = startPosition
+
+        // Minimal Mode: allowed apps first, then the (grayed out) rest. Drawer folders are skipped.
+        if (minimalModePolicy.isEnabled) {
+            val (blocked, allowed) = appList.filterNotNull().partition { minimalModePolicy.isBlocked(it) }
+            position = super.addAppsWithSections(allowed, position)
+            return super.addAppsWithSections(blocked, position)
+        }
 
         // Show app drawer folders only on main profile, to prevent state complexity
         if (isWorkOrPrivateSpace(appList)) return super.addAppsWithSections(appList, position)

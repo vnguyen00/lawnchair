@@ -34,9 +34,17 @@ class MinimalModePolicy(private val context: Context) {
 
     @Volatile
     var isEnabled: Boolean = false
+        set(value) {
+            field = value
+            dialerPackage = null
+        }
 
     @Volatile
     private var allowedApps: Set<Pair<String, UserHandle>> = emptySet()
+
+    // Looked up lazily, since icons check it on every bind.
+    @Volatile
+    private var dialerPackage: String? = null
 
     /** @param keys [ComponentKey] strings, as stored in `PreferenceManager2.minimalModeApps`. */
     fun setAllowedApps(keys: Set<String>) {
@@ -49,10 +57,17 @@ class MinimalModePolicy(private val context: Context) {
         if (!isEnabled) return true
         // Nothing resolves, so the launch would fail anyway.
         val packageName = resolvePackage(intent, item) ?: return true
-        if (isAlwaysAllowed(packageName)) return true
-        val user = item?.user ?: Process.myUserHandle()
-        return (packageName to user) in allowedApps
+        return isAllowed(packageName, item?.user ?: Process.myUserHandle())
     }
+
+    /** Whether [item] should be shown grayed out. */
+    fun isBlocked(item: ItemInfo): Boolean {
+        if (!isEnabled) return false
+        val packageName = item.targetPackage ?: return false
+        return !isAllowed(packageName, item.user ?: Process.myUserHandle())
+    }
+
+    private fun isAllowed(packageName: String, user: UserHandle): Boolean = isAlwaysAllowed(packageName) || (packageName to user) in allowedApps
 
     private fun resolvePackage(intent: Intent, item: ItemInfo?): String? = intent.component?.packageName
         ?: intent.`package`
@@ -62,7 +77,9 @@ class MinimalModePolicy(private val context: Context) {
     private fun isAlwaysAllowed(packageName: String): Boolean {
         // "android" hosts the app chooser/resolver.
         if (packageName == context.packageName || packageName == "android") return true
-        val telecomManager = context.getSystemService(TelecomManager::class.java)
-        return packageName == telecomManager?.defaultDialerPackage
+        val dialer = dialerPackage
+            ?: context.getSystemService(TelecomManager::class.java)?.defaultDialerPackage
+                ?.also { dialerPackage = it }
+        return packageName == dialer
     }
 }

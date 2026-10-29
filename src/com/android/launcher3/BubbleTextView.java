@@ -115,6 +115,7 @@ import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
 import app.lawnchair.font.FontManager;
 import app.lawnchair.gestures.IconGestureListener;
 import app.lawnchair.preferences.PreferenceManager;
+import app.lawnchair.minimal.MinimalModeManager;
 import app.lawnchair.preferences2.PreferenceManager2;
 import app.lawnchair.util.LawnchairUtilsKt;
 import app.lawnchair.animation.PhysicsAnimator;
@@ -569,6 +570,10 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
             flags |= FLAG_SKIP_USER_BADGE;
         }
         FastBitmapDrawable iconDrawable = info.newIcon(getContext(), flags);
+        // Lawnchair: Minimal Mode grays out apps that aren't allowed
+        if (MinimalModeManager.Companion.getInstance(getContext()).getPolicy().isBlocked(info)) {
+            iconDrawable.setDisabled(true);
+        }
         mDotParams.appColor = iconDrawable.getIconColor();
         mDotParams.dotColor = Themes.getAttrColor(getContext(), R.attr.notificationDotColor);
         if (isPrivateSpaceIcon) {

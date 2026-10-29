@@ -42,7 +42,7 @@ import app.lawnchair.gestures.config.GestureHandlerConfig
 import app.lawnchair.gestures.ui.LawnchairShortcutActivity
 import app.lawnchair.nexuslauncher.OverlayCallbackImpl
 import app.lawnchair.preferences.PreferenceManager
-import app.lawnchair.minimal.MinimalModePolicy
+import app.lawnchair.minimal.MinimalModeManager
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.preferences2.firstCached
 import app.lawnchair.root.RootHelperManager
@@ -101,7 +101,7 @@ class LawnchairLauncher : QuickstepLauncher() {
     private val defaultOverlay by unsafeLazy { OverlayCallbackImpl(this) }
     private val prefs by unsafeLazy { PreferenceManager.getInstance(this) }
     private val preferenceManager2 by unsafeLazy { PreferenceManager2.getInstance(this) }
-    private val minimalModePolicy by unsafeLazy { MinimalModePolicy(this) }
+    private val minimalModeManager by unsafeLazy { MinimalModeManager.getInstance(this) }
     private val insetsController: WindowInsetsControllerCompat by lazy {
         val window = launcher.window
             ?: throw Exception("WindowInsetsControllerCompat not available.")
@@ -234,12 +234,8 @@ class LawnchairLauncher : QuickstepLauncher() {
         preferenceManager2.backPressGestureHandler.onEach(launchIn = lifecycleScope) { handler ->
             hasBackGesture = handler !is GestureHandlerConfig.NoOp
         }
-        preferenceManager2.minimalModeEnabled.onEach(launchIn = lifecycleScope) {
-            minimalModePolicy.isEnabled = it
-        }
-        preferenceManager2.minimalModeApps.onEach(launchIn = lifecycleScope) {
-            minimalModePolicy.setAllowedApps(it)
-        }
+        // Rebuild icons and the app drawer so blocked apps are grayed out (or no longer are).
+        minimalModeManager.changes.onEach { recreateIfNotScheduled() }.launchIn(lifecycleScope)
 
         LauncherOptionsPopup.restoreMissingPopupOptions(launcher)
         LauncherOptionsPopup.migrateLegacyPreferences(launcher)
@@ -279,7 +275,7 @@ class LawnchairLauncher : QuickstepLauncher() {
     }
 
     override fun startActivitySafely(v: View?, intent: Intent, item: ItemInfo?): RunnableList? {
-        if (!minimalModePolicy.isAllowed(intent, item)) {
+        if (!minimalModeManager.policy.isAllowed(intent, item)) {
             Toast.makeText(this, R.string.minimal_mode_app_blocked, Toast.LENGTH_SHORT).show()
             return null
         }
