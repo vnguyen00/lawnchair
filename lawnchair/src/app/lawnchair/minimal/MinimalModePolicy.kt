@@ -70,6 +70,9 @@ class MinimalModePolicy(private val context: Context) {
 
     fun isBlocked(packageName: String, user: UserHandle): Boolean = isEnabled && !isAllowed(packageName, user)
 
+    /** Whether [packageName] is allowed for any user. */
+    fun isPackageAllowed(packageName: String): Boolean = isAlwaysAllowed(packageName) || allowedApps.any { it.first == packageName }
+
     private fun isAllowed(packageName: String, user: UserHandle): Boolean = isAlwaysAllowed(packageName) || (packageName to user) in allowedApps
 
     private fun resolvePackage(intent: Intent, item: ItemInfo?): String? = intent.component?.packageName

@@ -16,6 +16,8 @@
 
 package app.lawnchair.ui.preferences.destinations
 
+import android.content.Intent
+import android.provider.Settings
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.width
@@ -23,16 +25,22 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Checkbox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.LifecycleResumeEffect
+import app.lawnchair.lawnchairApp
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.ui.preferences.LocalIsExpandedScreen
 import app.lawnchair.ui.preferences.components.AppItem
 import app.lawnchair.ui.preferences.components.AppItemPlaceholder
 import app.lawnchair.ui.preferences.components.NavigationActionPreference
+import app.lawnchair.ui.preferences.components.controls.ClickablePreference
 import app.lawnchair.ui.preferences.components.controls.SwitchPreference
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
@@ -72,8 +80,37 @@ fun MinimalModePreferences(
                 destination = MinimalModeApps,
                 subtitle = resources.getQuantityString(R.plurals.apps_count, allowedApps.size, allowedApps.size),
             )
+            MinimalModeEnforcementPreference()
         }
     }
+}
+
+/**
+ * Shows whether the accessibility service is on, which blocks apps opened outside the launcher.
+ */
+@Composable
+private fun MinimalModeEnforcementPreference(
+    modifier: Modifier = Modifier,
+) {
+    val context = LocalContext.current
+    var isEnforced by remember { mutableStateOf(context.lawnchairApp.isAccessibilityServiceBound()) }
+    // The user turns the service on in system settings, so check again when coming back.
+    LifecycleResumeEffect(Unit) {
+        isEnforced = context.lawnchairApp.isAccessibilityServiceBound()
+        onPauseOrDispose { }
+    }
+    ClickablePreference(
+        label = stringResource(id = R.string.minimal_mode_enforcement_label),
+        subtitle = stringResource(
+            id = if (isEnforced) R.string.minimal_mode_enforcement_on else R.string.minimal_mode_enforcement_off,
+        ),
+        modifier = modifier,
+        onClick = {
+            context.startActivity(
+                Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
+            )
+        },
+    )
 }
 
 @Composable

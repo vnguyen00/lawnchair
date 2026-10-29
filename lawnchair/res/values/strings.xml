@@ -162,7 +162,7 @@
     <string name="sort_active_items_action">Sort active items</string>
 
     <!-- A11y description -->
-    <string name="accessibility_service_description">To perform certain actions when you use a gesture, such as locking your phone, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch your actions, though all accessibility services require this privilege. Lawnchair discards any event sent by the system.\n\nTo lock your phone or open the Recents screen, Lawnchair uses the performGlobalAction accessibility service.</string>
+    <string name="accessibility_service_description">To perform certain actions when you use a gesture, such as locking your phone, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch your actions, though all accessibility services require this privilege. Lawnchair discards any event sent by the system.\n\nTo lock your phone or open the Recents screen, Lawnchair uses the performGlobalAction accessibility service.\n\nWhile Minimal Mode is on, Lawnchair checks which app opens and returns to the home screen if that app isn\'t allowed. Which apps you open is never stored or sent anywhere.</string>
 
     <string name="iconPackPackageDefault" translatable="false">""</string>
 
@@ -921,6 +921,10 @@
     <string name="minimal_mode_allowed_apps_label">Allowed apps</string>
     <string name="minimal_mode_allowed_apps_label_with_count">Allowed apps (%1$d)</string>
     <string name="minimal_mode_app_blocked">Blocked in Minimal Mode</string>
+    <string name="minimal_mode_app_blocked_named">%1$s is blocked in Minimal Mode</string>
+    <string name="minimal_mode_enforcement_label">Block apps opened outside the launcher</string>
+    <string name="minimal_mode_enforcement_on">On. Apps opened from notifications, links or recents are blocked too</string>
+    <string name="minimal_mode_enforcement_off">Off. Turn on Lawnchair in Accessibility settings. If it\'s grayed out, first tap \u22EE &gt; Allow restricted settings in Lawnchair\'s App info.</string>
     <plurals name="apps_count">
         <item quantity="one">%1$d app</item>
         <item quantity="other">%1$d apps</item>
