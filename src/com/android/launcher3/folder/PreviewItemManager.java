@@ -56,6 +56,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
+import app.lawnchair.minimal.MinimalModeManager;
+import com.android.launcher3.icons.FastBitmapDrawable;
 import app.lawnchair.preferences.PreferenceManager;
 
 /**
@@ -414,6 +416,11 @@ public class PreviewItemManager {
             var isThemed = PreferenceManager.getInstance(mContext).getDrawerThemedIcons().get() ? FLAG_THEMED : 0;
             p.drawable = withIcon.newIcon(mContext, isThemed);
             p.drawable.setBounds(0, 0, iconSize, iconSize);
+        }
+        // Lawnchair: Minimal Mode grays out apps that aren't allowed
+        if (p.drawable instanceof FastBitmapDrawable fbd
+                && MinimalModeManager.Companion.getInstance(mContext).getPolicy().isBlocked(item)) {
+            fbd.setDisabled(true);
         }
 
         p.item = item;

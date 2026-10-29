@@ -109,7 +109,8 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
     // The current set of adapter items
     protected final ArrayList<AdapterItem> mAdapterItems = new ArrayList<>();
     // The set of sections that we allow fast-scrolling to (includes non-merged sections)
-    private final List<FastScrollSectionInfo> mFastScrollerSections = new ArrayList<>();
+    // Lawnchair: protected for Minimal Mode
+    protected final List<FastScrollSectionInfo> mFastScrollerSections = new ArrayList<>();
 
     // The of ordered component names as a result of a search query
     private final ArrayList<AdapterItem> mSearchResults = new ArrayList<>();
