@@ -569,7 +569,10 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         if (mSkipUserBadge) {
             flags |= FLAG_SKIP_USER_BADGE;
         }
-        FastBitmapDrawable iconDrawable = info.newIcon(getContext(), flags);
+        // LC-Note: Open drawer-folder children must use the same preference as their preview.
+        FastBitmapDrawable iconDrawable = mDisplay == DISPLAY_DRAWER_FOLDER
+                ? info.newIcon(getContext(), flags, shouldUseTheme())
+                : info.newIcon(getContext(), flags);
         // Lawnchair: Minimal Mode grays out apps that aren't allowed
         if (MinimalModeManager.Companion.getInstance(getContext()).getPolicy().isBlocked(info)) {
             iconDrawable.setDisabled(true);
