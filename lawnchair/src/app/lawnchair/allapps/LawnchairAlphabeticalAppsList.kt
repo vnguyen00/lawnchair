@@ -9,6 +9,7 @@ import androidx.lifecycle.lifecycleScope
 import app.lawnchair.data.folder.FolderEntry
 import app.lawnchair.data.folder.model.FolderViewModel
 import app.lawnchair.launcher
+import app.lawnchair.minimal.MinimalModeManager
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.util.categorizeAppsWithSystemAndGoogle
@@ -16,6 +17,7 @@ import app.lawnchair.util.observeOnce
 import com.android.launcher3.InvariantDeviceProfile.OnIDPChangeListener
 import com.android.launcher3.allapps.AllAppsStore
 import com.android.launcher3.allapps.AlphabeticalAppsList
+import com.android.launcher3.allapps.AlphabeticalAppsList.FastScrollSectionInfo
 import com.android.launcher3.allapps.BaseAllAppsAdapter.AdapterItem
 import com.android.launcher3.allapps.PrivateProfileManager
 import com.android.launcher3.allapps.WorkProfileManager
@@ -41,6 +43,7 @@ class LawnchairAlphabeticalAppsList<T>(
     private var hiddenApps: Set<String> = setOf()
     private val prefs2 = PreferenceManager2.getInstance(context)
     private val prefs = PreferenceManager.getInstance(context)
+    private val minimalModePolicy = MinimalModeManager.getInstance(context).policy
 
     private val viewModel = FolderViewModel(
         (context as? ComponentActivity)?.application ?: context.launcher.application,
@@ -90,6 +93,18 @@ class LawnchairAlphabeticalAppsList<T>(
         val drawerListDefault = prefs.drawerList.get()
         filteredList.clear()
         var position = startPosition
+
+        // Minimal Mode: allowed apps first, then the (grayed out) rest. Drawer folders are skipped.
+        if (minimalModePolicy.isEnabled) {
+            val (blocked, allowed) = appList.filterNotNull().partition { minimalModePolicy.isBlocked(it) }
+            if (allowed.isNotEmpty()) {
+                // One fast scroller section for all allowed apps, so the letters only appear once.
+                mFastScrollerSections.add(FastScrollSectionInfo(MINIMAL_MODE_SECTION, position))
+                allowed.forEach { mAdapterItems.add(AdapterItem.asApp(it)) }
+                position += allowed.size
+            }
+            return super.addAppsWithSections(blocked, position)
+        }
 
         // Show app drawer folders only on main profile, to prevent state complexity
         if (isWorkOrPrivateSpace(appList)) return super.addAppsWithSections(appList, position)
@@ -142,3 +157,6 @@ class LawnchairAlphabeticalAppsList<T>(
         onAppsUpdated()
     }
 }
+
+// Fast scroller label for the allowed apps at the top of the drawer in Minimal Mode.
+private const val MINIMAL_MODE_SECTION = "★"

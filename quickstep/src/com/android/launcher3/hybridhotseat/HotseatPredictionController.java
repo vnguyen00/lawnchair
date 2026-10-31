@@ -38,6 +38,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 
+import app.lawnchair.minimal.MinimalModeManager;
+import app.lawnchair.minimal.MinimalModePolicy;
 import app.lawnchair.preferences2.PreferenceManager2;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DragSource;
@@ -328,8 +330,13 @@ public class HotseatPredictionController implements DragController.DragListener,
      * Sets or updates the predicted items
      */
     public void setPredictedItems(PredictedContainerInfo items) {
-        mPredictedItems = items.getContents();
-        if (mPredictedItems.isEmpty()) {
+        // Lawnchair: Minimal Mode doesn't suggest apps that aren't allowed
+        MinimalModePolicy minimalModePolicy = MinimalModeManager.Companion.getInstance(mLauncher)
+                .getPolicy();
+        mPredictedItems = items.getContents().stream()
+                .filter(item -> !minimalModePolicy.isBlocked(item))
+                .collect(Collectors.toList());
+        if (items.getContents().isEmpty()) {
             HotseatRestoreHelper.restoreBackup(mLauncher);
         }
         fillGapsWithPrediction();

@@ -162,7 +162,7 @@
     <string name="sort_active_items_action">Sort active items</string>
 
     <!-- A11y description -->
-    <string name="accessibility_service_description">To perform certain actions when you use a gesture, such as locking your phone, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch your actions, though all accessibility services require this privilege. Lawnchair discards any event sent by the system.\n\nTo lock your phone or open the Recents screen, Lawnchair uses the performGlobalAction accessibility service.</string>
+    <string name="accessibility_service_description">To perform certain actions when you use a gesture, such as locking your phone, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch your actions, though all accessibility services require this privilege. Lawnchair discards any event sent by the system.\n\nTo lock your phone or open the Recents screen, Lawnchair uses the performGlobalAction accessibility service.\n\nWhile Minimal Mode is on, Lawnchair checks which app opens and returns to the home screen if that app isn\'t allowed. Which apps you open is never stored or sent anywhere.</string>
 
     <string name="iconPackPackageDefault" translatable="false">""</string>
 
@@ -911,6 +911,43 @@
     <!-- HiddenAppsPreferences -->
     <string name="hide_from_drawer">Hide from app drawer</string>
     <string name="hidden_apps_label_with_count">Hidden apps (%1$d)</string>
+
+    <!-- Minimal Mode -->
+    <string name="minimal_mode_label">Minimal Mode</string>
+    <string name="minimal_mode_description">Only allow the apps you choose</string>
+    <string name="minimal_mode_enable_label">Use Minimal Mode</string>
+    <string name="minimal_mode_enable_description">Switches to a home screen with only the apps you allow</string>
+    <string name="minimal_mode_unavailable_with_deck">Turn off the Lawndeck home layout to use Minimal Mode</string>
+    <string name="minimal_mode_allowed_apps_label">Allowed apps</string>
+    <string name="minimal_mode_allowed_apps_label_with_count">Allowed apps (%1$d)</string>
+    <string name="minimal_mode_app_blocked">Blocked in Minimal Mode</string>
+    <string name="minimal_mode_app_blocked_named">%1$s is blocked in Minimal Mode</string>
+    <string name="minimal_mode_enforcement_label">Block apps opened outside the launcher</string>
+    <string name="minimal_mode_enforcement_on">On. Apps opened from notifications, links or recents are blocked too</string>
+    <string name="minimal_mode_enforcement_off">Off. Turn on Lawnchair in Accessibility settings. If it\'s grayed out, first tap \u22EE &gt; Allow restricted settings in Lawnchair\'s App info.</string>
+    <string name="minimal_mode_lock_heading">Lock</string>
+    <string name="minimal_mode_lock_label">Require to turn off or change</string>
+    <string name="minimal_mode_lock_none">Nothing</string>
+    <string name="minimal_mode_lock_pin">A Minimal Mode PIN</string>
+    <string name="minimal_mode_lock_device">Phone\'s screen lock</string>
+    <string name="minimal_mode_lock_device_unavailable">Set a screen lock in system settings first</string>
+    <string name="minimal_mode_locked_description">Minimal Mode is locked. Unlock it to turn it off or change its settings.</string>
+    <string name="minimal_mode_unlock">Unlock</string>
+    <string name="minimal_mode_unlock_title">Unlock Minimal Mode</string>
+    <string name="minimal_mode_enter_pin">Enter Minimal Mode PIN</string>
+    <string name="minimal_mode_pin">PIN</string>
+    <string name="minimal_mode_pin_wrong">Wrong PIN</string>
+    <string name="minimal_mode_set_pin">Set Minimal Mode PIN</string>
+    <string name="minimal_mode_set_pin_description">At least 4 digits. Someone else can keep it so you can\'t turn Minimal Mode off on a whim. If it\'s forgotten, the only way out is clearing Lawnchair\'s data.</string>
+    <string name="minimal_mode_confirm_pin">Confirm PIN</string>
+    <string name="minimal_mode_pin_mismatch">PINs don\'t match</string>
+    <string name="minimal_mode_schedule_label">Schedule</string>
+    <string name="minimal_mode_schedule_enable_label">Turn on automatically</string>
+    <string name="minimal_mode_schedule_enable_description">Turns Minimal Mode on at the start time and off at the end time</string>
+    <string name="minimal_mode_schedule_start">Start</string>
+    <string name="minimal_mode_schedule_end">End</string>
+    <string name="minimal_mode_schedule_days">Days</string>
+    <string name="minimal_mode_schedule_no_days">No days chosen</string>
     <plurals name="apps_count">
         <item quantity="one">%1$d app</item>
         <item quantity="other">%1$d apps</item>

@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.model;
 
+import app.lawnchair.minimal.MinimalModeLayoutSwitcher;
 import static com.android.launcher3.LauncherSettings.Favorites.addTableToDb;
 import static com.android.launcher3.provider.LauncherDbUtils.dropTable;
 
@@ -331,6 +332,16 @@ public class DatabaseHelper extends NoLocaleSQLiteHelper implements
             final IntSet validWidgets = IntSet.wrap(LauncherDbUtils.queryIntArray(false, db,
                     Favorites.TABLE_NAME, Favorites.APPWIDGET_ID,
                     "itemType=" + Favorites.ITEM_TYPE_APPWIDGET, null, null));
+            // Lawnchair: widgets on the home screen layout Minimal Mode set aside are still in use
+            for (String table : MinimalModeLayoutSwitcher.SNAPSHOT_TABLES) {
+                if (LauncherDbUtils.tableExists(db, table)) {
+                    for (int widgetId : LauncherDbUtils.queryIntArray(false, db, table,
+                            Favorites.APPWIDGET_ID, "itemType=" + Favorites.ITEM_TYPE_APPWIDGET,
+                            null, null).toArray()) {
+                        validWidgets.add(widgetId);
+                    }
+                }
+            }
             boolean isAnyWidgetRemoved = false;
             for (int widgetId : allWidgets) {
                 if (!validWidgets.contains(widgetId)) {
@@ -489,8 +500,16 @@ public class DatabaseHelper extends NoLocaleSQLiteHelper implements
     }
 
     private int initializeMaxItemId(SQLiteDatabase db) {
-        return getMaxId(db, "SELECT MAX(%1$s) FROM %2$s", Favorites._ID,
+        int maxId = getMaxId(db, "SELECT MAX(%1$s) FROM %2$s", Favorites._ID,
                 Favorites.TABLE_NAME);
+        // Lawnchair: the layout Minimal Mode set aside comes back later, so never reuse its ids
+        for (String table : MinimalModeLayoutSwitcher.SNAPSHOT_TABLES) {
+            if (LauncherDbUtils.tableExists(db, table)) {
+                maxId = Math.max(maxId,
+                        getMaxId(db, "SELECT MAX(%1$s) FROM %2$s", Favorites._ID, table));
+            }
+        }
+        return maxId;
     }
 
     /**

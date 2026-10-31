@@ -88,6 +88,11 @@ data object Gestures : PreferenceRootRoute, PreferenceDeepLink {
 }
 
 @Serializable
+data object MinimalMode : PreferenceRootRoute, PreferenceDeepLink {
+    override val deepLink = "$URI/minimal-mode"
+}
+
+@Serializable
 data object Smartspace : PreferenceRootRoute, PreferenceDeepLink {
     override val deepLink = "$URI/smartspace"
 }
@@ -187,6 +192,12 @@ data class SearchProviderPreference(val id: SearchProviderId) :
 // Smartspace section routes
 @Serializable
 data object SmartspaceWidget : PreferenceRoute
+
+// Minimal Mode section routes
+@Serializable
+data object MinimalModeApps : PreferenceRoute, PreferenceDeepLink {
+    override val deepLink = "$URI/minimal-mode-apps"
+}
 
 // Gestures section routes
 @Serializable
