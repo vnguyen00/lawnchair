@@ -42,6 +42,7 @@ import app.lawnchair.gestures.config.GestureHandlerConfig
 import app.lawnchair.gestures.ui.LawnchairShortcutActivity
 import app.lawnchair.nexuslauncher.OverlayCallbackImpl
 import app.lawnchair.preferences.PreferenceManager
+import app.lawnchair.minimal.MinimalModeIndicator
 import app.lawnchair.minimal.MinimalModeManager
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.preferences2.firstCached
@@ -236,6 +237,9 @@ class LawnchairLauncher : QuickstepLauncher() {
         }
         // Rebuild icons and the app drawer so blocked apps are grayed out (or no longer are).
         minimalModeManager.changes.onEach { recreateIfNotScheduled() }.launchIn(lifecycleScope)
+        if (minimalModeManager.policy.isEnabled) {
+            MinimalModeIndicator.attach(this)
+        }
 
         LauncherOptionsPopup.restoreMissingPopupOptions(launcher)
         LauncherOptionsPopup.migrateLegacyPreferences(launcher)
@@ -483,6 +487,7 @@ class LawnchairLauncher : QuickstepLauncher() {
     override fun onResume() {
         super.onResume()
         restartIfPending()
+        minimalModeManager.applyDueSchedule()
         refreshPredictionContainersFromModel()
 
         dragLayer.viewTreeObserver.addOnDrawListener(

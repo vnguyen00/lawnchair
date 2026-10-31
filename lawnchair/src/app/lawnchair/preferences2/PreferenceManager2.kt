@@ -347,6 +347,41 @@ class PreferenceManager2 @Inject constructor(
         defaultValue = setOf(),
     )
 
+    /** A [app.lawnchair.minimal.MinimalModeLock.Type] name. */
+    val minimalModeLock = preference(
+        key = stringPreferencesKey(name = "minimal_mode_lock"),
+        defaultValue = "NONE",
+    )
+
+    /** Salted hash of the Minimal Mode PIN, see [app.lawnchair.minimal.MinimalModeLock]. */
+    val minimalModePinHash = preference(
+        key = stringPreferencesKey(name = "minimal_mode_pin_hash"),
+        defaultValue = "",
+    )
+
+    val minimalModeScheduleEnabled = preference(
+        key = booleanPreferencesKey(name = "minimal_mode_schedule_enabled"),
+        defaultValue = false,
+    )
+
+    /** Minutes after midnight. */
+    val minimalModeScheduleStart = preference(
+        key = intPreferencesKey(name = "minimal_mode_schedule_start"),
+        defaultValue = 9 * 60,
+    )
+
+    /** Minutes after midnight. Earlier than the start means the next day. */
+    val minimalModeScheduleEnd = preference(
+        key = intPreferencesKey(name = "minimal_mode_schedule_end"),
+        defaultValue = 17 * 60,
+    )
+
+    /** ISO day numbers (1 = Monday) the schedule starts on. */
+    val minimalModeScheduleDays = preference(
+        key = stringSetPreferencesKey(name = "minimal_mode_schedule_days"),
+        defaultValue = setOf("1", "2", "3", "4", "5"),
+    )
+
     val roundedWidgets = preference(
         key = booleanPreferencesKey(name = "rounded_widgets"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_rounded_widgets),

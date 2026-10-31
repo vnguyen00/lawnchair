@@ -40,6 +40,10 @@ import app.lawnchair.ui.preferences.LocalIsExpandedScreen
 import app.lawnchair.ui.preferences.components.AppItem
 import app.lawnchair.ui.preferences.components.AppItemPlaceholder
 import app.lawnchair.ui.preferences.components.NavigationActionPreference
+import app.lawnchair.ui.preferences.components.MinimalModeLockPreference
+import app.lawnchair.ui.preferences.components.MinimalModeLockedContent
+import app.lawnchair.ui.preferences.components.MinimalModeSchedulePreferences
+import app.lawnchair.ui.preferences.components.rememberMinimalModeLockState
 import app.lawnchair.ui.preferences.components.controls.ClickablePreference
 import app.lawnchair.ui.preferences.components.controls.SwitchPreference
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
@@ -66,6 +70,11 @@ fun MinimalModePreferences(
         backArrowVisible = !LocalIsExpandedScreen.current,
         modifier = modifier,
     ) {
+        val lockState = rememberMinimalModeLockState()
+        if (lockState.isLocked) {
+            MinimalModeLockedContent(lockState)
+            return@PreferenceLayout
+        }
         PreferenceGroup {
             SwitchPreference(
                 adapter = prefs2.minimalModeEnabled.getAdapter(),
@@ -82,6 +91,10 @@ fun MinimalModePreferences(
             )
             MinimalModeEnforcementPreference()
         }
+        PreferenceGroup(heading = stringResource(id = R.string.minimal_mode_lock_heading)) {
+            MinimalModeLockPreference()
+        }
+        MinimalModeSchedulePreferences()
     }
 }
 
@@ -117,6 +130,17 @@ private fun MinimalModeEnforcementPreference(
 fun MinimalModeAppsPreferences(
     modifier: Modifier = Modifier,
 ) {
+    val lockState = rememberMinimalModeLockState()
+    if (lockState.isLocked) {
+        PreferenceLayout(
+            label = stringResource(id = R.string.minimal_mode_allowed_apps_label),
+            backArrowVisible = !LocalIsExpandedScreen.current,
+            modifier = modifier,
+        ) {
+            MinimalModeLockedContent(lockState)
+        }
+        return
+    }
     val adapter = preferenceManager2().minimalModeApps.getAdapter()
     val allowedApps by adapter.state
     val pageTitle =
